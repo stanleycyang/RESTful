@@ -1,6 +1,7 @@
 // Load environmental variables
 require('dotenv').load();
 var express = require('express');
+var jwt = require('jsonwebtoken');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -33,17 +34,30 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
 
-// For all requests
-app.use(function(request, response, next){
-  console.log('Someone came to our application'.blue);
-  //var token = request.body.token || request.params('token') || request.headers['x-access-token'];
-
-  console.log(process.env.JWT_SECRET);
-  next();
-});
-
 // Home page
 app.use('/', routes);
+
+// For all requests
+app.use(function(request, response, next){
+
+  console.log('Someone came to our application'.blue);
+
+  var token = request.body.token || request.params.token || request.headers['x-access-token'];
+
+  // No token was provided. Turn them back
+  if(!token){
+    return response.status(403).json({
+      success: false,
+      message: 'No token was provided'
+    });
+  }
+
+
+
+  next();
+
+});
+
 
 // API routes
 app.use('/api/users', users);

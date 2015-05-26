@@ -1,5 +1,4 @@
 var jwt = require('jsonwebtoken');
-var secret = 'winniethepooh';
 var User = require('../models/user');
 
 exports.login = function(request, response){
@@ -32,7 +31,7 @@ exports.login = function(request, response){
     var token = jwt.sign({
       name: user.name,
       username: user.username
-    }, secret, {
+    }, process.env.JWT_SECRET, {
       expiresInMinutes: 1440
     });
 
