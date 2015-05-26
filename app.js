@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var mongoose = require('mongoose');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -15,6 +16,9 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+// Connect MongoDB
+mongoose.connect('mongodb://stan:foobar@ds035702.mongolab.com:35702/heroku_app37202379');
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
@@ -23,9 +27,20 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Routes
+
+// For all requests
+app.use(function(request, response, next){
+  console.log('Someone came to our application');
+  next();
+});
+
+// Home page
 app.use('/', routes);
-app.use('/users', users);
-app.use('/blogs', blogs);
+
+// API routes
+app.use('/api/users', users);
+app.use('/api/blogs', blogs);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
