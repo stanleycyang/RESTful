@@ -32,7 +32,7 @@ exports.login = function(request, response){
       name: user.name,
       username: user.username
     }, process.env.JWT_SECRET, {
-      expiresInMinutes: 1440
+      expiresInMinutes: 60*5
     });
 
     // Successful. Send back the jwt

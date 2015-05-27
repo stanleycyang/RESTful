@@ -25,7 +25,7 @@ app.set('view engine', 'jade');
 mongoose.connect('mongodb://stan:foobar@ds035702.mongolab.com:35702/heroku_app37202379');
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -36,32 +36,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Home page
 app.use('/', routes);
-
-// For all requests
-app.use(function(request, response, next){
-
-  console.log('Someone came to our application'.blue);
-
-  var token = request.body.token || request.params.token || request.headers['x-access-token'];
-
-  // No token was provided. Turn them back
-  if(!token){
-    return response.status(403).json({
-      success: false,
-      message: 'No token was provided'
-    });
-  }
-
-
-
-  next();
-
-});
-
-
-// API routes
-app.use('/api/users', users);
+// Authenticate
 app.use('/api', authenticate);
+// Users
+app.use('/api/users', users);
+// Blogs
 app.use('/api/blogs', blogs);
 
 // catch 404 and forward to error handler
