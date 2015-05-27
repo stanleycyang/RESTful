@@ -28,6 +28,18 @@ app.use(function(request, response, next){
  */
 
 var server = http.createServer(app);
+var io = require('socket.io')(server);
+
+// When user connects
+io.on('connection', function(socket){
+
+  console.log('user has connected!');
+
+  // When user disconnects
+  socket.on('disconnect', function(){
+    console.log('user disconnected!');
+  });
+});
 
 /**
  * Listen on provided port, on all network interfaces.
